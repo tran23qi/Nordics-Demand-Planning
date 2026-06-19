@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nordic Demand Planning & Forecast Accuracy Dashboard</title>
+  <style>
+    :root {
+      --navy: #071123;
+      --text: #0f172a;
+      --muted: #526684;
+      --light: #f6f8fb;
+      --border: #e4e9f1;
+      --card: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: #ffffff;
+      line-height: 1.6;
+    }
+
+    .hero {
+      padding: 90px 24px 70px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .tag {
+      background: #eef3f9;
+      color: #182235;
+      padding: 7px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: 52px;
+      line-height: 1.08;
+      letter-spacing: -2.2px;
+      margin: 0 0 22px;
+      max-width: 850px;
+      color: #050817;
+    }
+
+    .subtitle {
+      font-size: 21px;
+      color: var(--muted);
+      margin: 0 0 10px;
+      max-width: 820px;
+    }
+
+    .role {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 34px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin: 36px 0 34px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: white;
+    }
+
+    .stat-icon {
+      font-size: 22px;
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-weight: 800;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.08);
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--navy);
+    }
+
+    section {
+      padding: 58px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .section-num {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: 29px;
+      line-height: 1.2;
+      margin: 0;
+      letter-spacing: -0.8px;
+      color: #050817;
+    }
+
+    .deliverables {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 26px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--card);
+      padding: 28px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+    }
+
+    .file-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 230px;
+    }
+
+    .file-top {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .file-icon {
+      background: #eef1f5;
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+      flex-shrink: 0;
+    }
+
+    .file-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .file-meta {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .file-desc {
+      color: var(--muted);
+      margin: 18px 0;
+    }
+
+    .full-card {
+      font-size: 21px;
+      line-height: 1.55;
+    }
+
+    .check-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .check-list li {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 22px;
+      font-size: 18px;
+    }
+
+    .check {
+      border: 2px solid var(--navy);
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: inline-grid;
+      place-items: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 800;
+      background: white;
+    }
+
+    tr:nth-child(even) td {
+      background: #f7f9fc;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    code {
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .insight-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .insight-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .actions {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .actions li {
+      font-size: 18px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 18px;
+    }
+
+    .arrow {
+      font-size: 23px;
+      line-height: 1;
+    }
+
+    .process {
+      background: #f7f9fc;
+      border-radius: 16px;
+      padding: 28px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .footer {
+      padding: 40px 24px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      h1 {
+        font-size: 38px;
+      }
+
+      .stats,
+      .deliverables,
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 55px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="hero">
+    <div class="container">
+      <div class="tags">
+        <span class="tag">Demand Planning</span>
+        <span class="tag">Forecast Accuracy</span>
+        <span class="tag">S&amp;OP</span>
+        <span class="tag">Supply Chain</span>
+      </div>
+
+      <h1>Nordic Demand Planning &amp; Forecast Accuracy Dashboard</h1>
+
+      <p class="subtitle">
+        FMCG case study • Pasta · Sauces · Crispbread · Bakery • Norway · Sweden · Denmark · Finland · Baltics
+      </p>
+
+      <p class="role">
+        Role simulated: Area Demand Planner – Nordics. Tools: Excel / Power BI, S&amp;OP framework.
+      </p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-icon">▣</div>
+          <div>
+            <div class="stat-number">28</div>
+            <div class="stat-label">SKUs</div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-icon">◎</div>
+          <div>
+            <div class="stat-number">5</div>
+            <div class="stat-label">Markets</div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-icon">▤</div>
+          <div>
+            <div class="stat-number">52</div>
+            <div class="stat-label">Weeks</div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-icon">▥</div>
+          <div>
+            <div class="stat-number">~6k</div>
+            <div class="stat-label">Rows</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <a class="btn btn-primary" href="Nordic_Demand_Planning_Dashboard.xlsx" download>Download Excel Dashboard</a>
+        <a class="btn btn-secondary" href="Nordic_Demand_Planning_Case_Study.docx" download>Download Case Study (Word)</a>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="container">
+      <h2 style="margin-bottom: 28px;">Portfolio deliverables</h2>
+
+      <div class="deliverables">
+        <div class="card file-card">
+          <div>
+            <div class="file-top">
+              <div class="file-icon">▤</div>
+              <div>
+                <div class="file-title">Excel Dashboard</div>
+                <div class="file-meta">497 KB · .xlsx</div>
+              </div>
+            </div>
+            <p class="file-desc">
+              Raw data, KPI dashboard, variance analysis, market view and executive summary with formulas and conditional formatting.
+            </p>
+          </div>
+          <a class="btn btn-primary" href="Nordic_Demand_Planning_Dashboard.xlsx" download>Download .xlsx</a>
+        </div>
+
+        <div class="card file-card">
+          <div>
+            <div class="file-top">
+              <div class="file-icon">▧</div>
+              <div>
+                <div class="file-title">Case Study Narrative</div>
+                <div class="file-meta">13 KB · .docx</div>
+              </div>
+            </div>
+            <p class="file-desc">
+              One-page professional narrative covering business question, data preparation, KPI design, forecast analysis and recommended actions.
+            </p>
+          </div>
+          <a class="btn btn-secondary" href="Nordic_Demand_Planning_Case_Study.docx" download>Download .docx</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <span class="section-num">01</span>
+        <h2>Business question</h2>
+      </div>
+
+      <div class="card full-card">
+        How accurately is the Nordic &amp; Baltic demand plan predicting actual shipments across categories and markets,
+        and where should the Area Demand Planner intervene to protect product availability while avoiding excess inventory?
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <span class="section-num">02</span>
+        <h2>Data preparation</h2>
+      </div>
+
+      <ul class="check-list">
+        <li><span class="check">✓</span> Built a fictional but realistic transactional dataset: 28 SKUs × 5 markets × 52 weeks, approximately 6,000 rows.</li>
+        <li><span class="check">✓</span> Modelled seasonality, campaign weeks, new product launches, lead times, stock availability and OOS events.</li>
+        <li><span class="check">✓</span> Cleansed history conceptually by flagging OOS-distorted weeks so they do not pollute the statistical baseline.</li>
+        <li><span class="check">✓</span> Joined SKU master with weekly shipment, forecast and customer-order data.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <span class="section-num">03</span>
+        <h2>KPI design</h2>
+      </div>
+
+      <table>
+        <tr>
+          <th>KPI</th>
+          <th>Definition</th>
+          <th>Why it matters for Barilla Nordic</th>
+        </tr>
+        <tr>
+          <td><strong>Forecast Accuracy</strong></td>
+          <td><code>1 - |Actual - Forecast| / Actual</code></td>
+          <td>Anchor KPI for the Area Demand Planner role.</td>
+        </tr>
+        <tr>
+          <td><strong>Forecast Bias</strong></td>
+          <td><code>(Forecast - Actual) / Actual</code></td>
+          <td>Detects systematic over/under-forecast per market and category.</td>
+        </tr>
+        <tr>
+          <td><strong>MAPE</strong></td>
+          <td><code>Mean absolute % error</code></td>
+          <td>Comparable error across SKUs of different sizes.</td>
+        </tr>
+        <tr>
+          <td><strong>Service Level</strong></td>
+          <td><code>Shipped / Customer Orders</code></td>
+          <td>Direct link to product availability and customer satisfaction.</td>
+        </tr>
+        <tr>
+          <td><strong>OOS Risk</strong></td>
+          <td><code>Share of SKU-weeks with stock &lt; 90%</code></td>
+          <td>Early warning for supply and replenishment issues.</td>
+        </tr>
+        <tr>
+          <td><strong>Campaign Uplift</strong></td>
+          <td><code>Promo vs. baseline volume lift</code></td>
+          <td>Calibrates commercial input into the forecast.</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <span class="section-num">04</span>
+        <h2>Forecast analysis</h2>
+      </div>
+
+      <div class="grid-2">
+        <div class="card insight-card">
+          <h3>↗ Baseline weeks</h3>
+          <p>Pasta and Sauces in Denmark and Norway are predicted within tight error bands; statistical baseline is doing its job.</p>
+        </div>
+
+        <div class="card insight-card">
+          <h3>↗ Promotional weeks</h3>
+          <p>Systematic under-forecast: planner uplifts trail observed sell-out; service level drops and OOS risk peaks.</p>
+        </div>
+
+        <div class="card insight-card">
+          <h3>↗ Launches</h3>
+          <p>First 8–12 weeks of new SKUs are over-forecast in some markets and under-forecast in others; no consensus loop with NPD/Sales.</p>
+        </div>
+
+        <div class="card insight-card">
+          <h3>↗ Crispbread</h3>
+          <p>Q4 seasonality captured; Finland and Sweden are the volume engine.</p>
+        </div>
+
+        <div class="card insight-card">
+          <h3>↗ Baltics</h3>
+          <p>Small volumes, high coefficient of variation; SKU-level statistical forecast is too noisy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <span class="section-num">05</span>
+        <h2>Stakeholder implications</h2>
+      </div>
+
+      <div class="grid-2">
+        <div class="card insight-card">
+          <h3>Sales &amp; Key Account</h3>
+          <p>Calibration of promo plans and listings; commercial input drives uplift assumptions.</p>
+        </div>
+
+        <div class="card insight-card">
+          <h3>Trade Marketing</h3>
+          <p>Post-promo evaluations feed back into a reusable uplift library by category and market.</p>
+        </div>
+
+        <div class="card insight-card">
+          <h3>Supply Chain / Plants</h3>
+          <p>Earlier visibility on volume swings stabilises capacity, lead times and safety stock.</p>
+        </div>
+
+        <div class="card insight-card">
+          <h3>Finance &amp; S&amp;OP</h3>
+          <p>Consensus forecast aligns volume, value and margin; reduces both lost sales and obsolescence.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <span class="section-num">06</span>
+        <h2>Recommended actions</h2>
+      </div>
+
+      <div class="card">
+        <ul class="actions">
+          <li><span class="arrow">→</span> Weekly Nordic demand review with Sales, Trade Marketing and Supply — one consensus number.</li>
+          <li><span class="arrow">→</span> Quarterly refresh of a promo uplift library per category × market, built from post-promo evaluations.</li>
+          <li><span class="arrow">→</span> Lock launch forecasts 8 weeks pre-go-live with NPD, Marketing and Key Account inputs.</li>
+          <li><span class="arrow">→</span> Move Baltics to category-level forecast with top-down SKU split; review safety stock for long-lead-time SKUs.</li>
+          <li><span class="arrow">→</span> Publish a one-page Nordic demand plan monthly and track Forecast Accuracy, Bias, Service Level and OOS Risk by market and category.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <span class="section-num">07</span>
+        <h2>Process I would own as Area Demand Planner</h2>
+      </div>
+
+      <div class="process">
+        Collect commercial input from Nordic Sales → cleanse history and rebuild statistical baseline → overlay campaign, launch and seasonality uplifts → run S&amp;OP consensus → publish demand plan → coordinate with Supply Chain on capacity and inventory → measure, learn and feed back into the next cycle.
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    FMCG case study – fictional dataset, illustrative only.
+  </footer>
+</body>
+</html>
